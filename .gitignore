@@ -1,3 +1,4 @@
 node_modules
 sensitive-crap.txt
 auth.json
+.env

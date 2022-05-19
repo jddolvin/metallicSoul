@@ -1,43 +1,28 @@
-const Discord = require("discord.io");
-let logger = require("winston");
-let auth = require("./auth.json");
+// Run dotenv
+require("dotenv").config();
 
-// Configure logger settings
-logger.remove(logger.transports.Console);
-logger.add(new logger.transports.Console(), {
-  colorize: true,
+const { Client, Intents } = require("discord.js");
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+
+client.once("ready", () => {
+  console.log(`Logged in as ${client.user.tag}!`);
 });
 
-logger.level = "debug";
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isCommand()) return;
 
-// Initialize Discord Bot
-
-var bot = new Discord.Client({
-  token: auth.token,
-  autorun: true,
-});
-
-bot.on("ready", function (evt) {
-  logger.info("Connected");
-  logger.info("Logged in as: ");
-  logger.info(bot.username + " = (" + bot.id + ")");
-});
-
-bot.on("message", function (user, userID, channelID, message, evt) {
-  // Our bot needs to know if it will execute a command
-  // It will listen for messages that will start with `!`
-  if (message.substring(0, 1) == "!") {
-    let args = message.substring(1).split(" ");
-    let cmd = args[0];
-    args = args.splice(1);
-    switch (cmd) {
-      // !ping
-      case "ping":
-        bot.sendMessage({
-          to: channelID,
-          message: "Pong!",
-        });
-        break;
-    }
+  const { commandName } = interaction;
+  if (commandName === "ping") {
+    await interaction.reply("Pong!");
+  } else if (commandName === "server") {
+    await interaction.reply(
+      `This is the only server with a cool ass bot like me!\n Server name: ${interaction.guild.name}\n Total members: ${interaction.guild.memberCount}`
+    );
+  } else if (commandName === "user") {
+    await interaction.reply(
+      `Your tag: ${interaction.user.tag}\n Your id: ${interaction.user.id}`
+    );
   }
 });
+
+client.login(process.env.DISCORD_TOKEN);
