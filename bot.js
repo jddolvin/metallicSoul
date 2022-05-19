@@ -11,18 +11,23 @@ client.once("ready", () => {
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
 
+  console.log(interaction);
+
   const { commandName } = interaction;
-  if (commandName === "ping") {
-    await interaction.reply("Pong!");
-  } else if (commandName === "server") {
-    await interaction.reply(
-      `This is the only server with a cool ass bot like me!\n Server name: ${interaction.guild.name}\n Total members: ${interaction.guild.memberCount}`
-    );
-  } else if (commandName === "user") {
-    await interaction.reply(
-      `Your tag: ${interaction.user.tag}\n Your id: ${interaction.user.id}`
-    );
+  switch (commandName) {
+    case "ping":
+      await interaction.reply("Pong!");
+      break;
+    case "server":
+      await interaction.reply(
+        `This is the only server with a cool ass bot like me!\n Server name: ${interaction.guild.name}\n Total members: ${interaction.guild.memberCount}`
+      );
+      break;
+    case "user":
+      await interaction.reply(
+        `Your tag: ${interaction.user.tag}\n Your id: ${interaction.user.id}`
+      );
+      break;
   }
 });
-
 client.login(process.env.DISCORD_TOKEN);
